@@ -111,16 +111,23 @@ Players.PlayerAdded:Connect(function(Player)
 						setBackPlayer("Fly")
 					end
 					
-					if airTick > 2 and PrimaryPart.Velocity.Y > 20 and lastLadderTicks > 10 and partInfrontOfPlayer then
+					if airTick > 4 and PrimaryPart.Velocity.Y > 1 and lastLadderTicks > 10 and partInfrontOfPlayer then
 						print(PrimaryPart.Velocity.Y)
 						Flags += 1
 						setBackPlayer("Step")
 					end
 					
 					local Magnitude2 = (PrimaryPart.Position.Y - lastPos.Y)
+					local newThresFastLadder = 0
 					if lastLadderTicks == 0 and Magnitude2 > 2 then
-						Flags += 1
-						setBackPlayer("Fast_Ladder")
+						newThresFastLadder += 1
+						if newThresFastLadder > 2 then
+							Flags += 1
+							setBackPlayer("Fast_Ladder")
+							newThresFastLadder = 0
+						end
+					else
+						newThresFastLadder -= 0.5
 					end
 					
 					local Magnitude3 = (PrimaryPart.Position.Y - lastPos.Y)
@@ -133,16 +140,15 @@ Players.PlayerAdded:Connect(function(Player)
 					if ((airCheck1 and Magnitude3 > max2) or (airCheck2 and Magnitude3 > max1)) and lastLadderTicks > 10 then
 						maxThresForBadJump += 1
 						if maxThresForBadJump > 6 then
-							Flags += 0.25
+							Flags += 1
 							setBackPlayer("Invalid_Jump")
 							maxThresForBadJump = 0
 						end
 					else
-						if maxThresForBadJump > 0.05 then
-							maxThresForBadJump -= 0.05
+						if maxThresForBadJump >= 0.25 then
+							maxThresForBadJump -= 0.25
 						end
 					end
-					print(maxThresForBadJump)
 				end
 
 				if Flags > 25 then
